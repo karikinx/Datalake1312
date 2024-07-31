@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "03_pipeline_Do_If_Skip_Else_block",
 	"properties": {
 		"activities": [
 			{
@@ -14,7 +14,7 @@
 				"typeProperties": {
 					"variableName": "dzielenie",
 					"value": {
-						"value": "@div(1,0)",
+						"value": "@div(10,2)",
 						"type": "Expression"
 					}
 				}
@@ -93,13 +93,13 @@
 			}
 		],
 		"variables": {
-			"Dzielenie": {
-				"type": "String"
-			},
 			"dzielenie": {
 				"type": "Integer"
 			},
 			"dodawanie": {
+				"type": "Integer"
+			},
+			"Dzielenie": {
 				"type": "Integer"
 			}
 		},

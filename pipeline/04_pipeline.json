@@ -1,0 +1,98 @@
+{
+	"name": "04_pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Success_variable",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dodawanie",
+					"value": {
+						"value": "@add(3,4)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Failed_variable",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Dzielenie",
+					"value": {
+						"value": "@div(10,2)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Condition",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Success_variable",
+						"dependencyConditions": [
+							"Completed"
+						]
+					},
+					{
+						"activity": "Failed_variable",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@activity('Fail').output",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "sie zjebało",
+								"errorCode": "123"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Wait",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 3
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"dodawanie": {
+				"type": "Integer"
+			},
+			"Dzielenie": {
+				"type": "Integer"
+			}
+		},
+		"annotations": []
+	}
+}
