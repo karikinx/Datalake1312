@@ -78,54 +78,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Error_Handling",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "dodawanie",
-					"value": {
-						"value": "@add(2,2)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set variable2",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Error_Handling",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "Dzielenie",
-					"value": {
-						"value": "@div(10,0)",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
@@ -138,6 +90,9 @@
 				"type": "Integer"
 			},
 			"Dzielenie": {
+				"type": "Integer"
+			},
+			"dzielenie": {
 				"type": "Integer"
 			}
 		},

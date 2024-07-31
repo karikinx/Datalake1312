@@ -1,0 +1,97 @@
+{
+	"name": "05_pipeline_success",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable success",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dodawanie",
+					"value": {
+						"value": "@add(1, 2)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable failed",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable success",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dzielenie",
+					"value": {
+						"value": "@div(2, 0)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Set variable failed",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 10
+				}
+			},
+			{
+				"name": "Set variable success1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dodawanie",
+					"value": {
+						"value": "@add(2,2)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"dodawanie": {
+				"type": "Integer"
+			},
+			"dzielenie": {
+				"type": "Integer"
+			}
+		},
+		"annotations": []
+	}
+}
