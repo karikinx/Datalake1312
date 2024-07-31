@@ -1,5 +1,5 @@
 {
-	"name": "05_pipeline_success",
+	"name": "06_pipeline_freestyle",
 	"properties": {
 		"activities": [
 			{
@@ -14,13 +14,13 @@
 				"typeProperties": {
 					"variableName": "dodawanie1",
 					"value": {
-						"value": "@add(1, 2)",
+						"value": "@add(1,2)",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "Set variable failed",
+				"name": "Set variable fail",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
@@ -38,35 +38,19 @@
 				"typeProperties": {
 					"variableName": "dzielenie1",
 					"value": {
-						"value": "@div(2, 0)",
+						"value": "@div(10,0)",
 						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "Set variable failed",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 10
-				}
-			},
-			{
-				"name": "Set variable success1",
+				"name": "Set variable success2",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Wait1",
+						"activity": "Set variable fail",
 						"dependencyConditions": [
-							"Completed"
+							"Succeeded"
 						]
 					}
 				],
@@ -82,15 +66,32 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Execute Pipeline success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set variable fail",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "05_pipeline_success",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
 			}
 		],
 		"variables": {
-			"dodawanie": {
-				"type": "Integer"
-			},
-			"dzielenie": {
-				"type": "Integer"
-			},
 			"dodawanie1": {
 				"type": "Integer"
 			},
