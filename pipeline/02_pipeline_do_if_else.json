@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "02_pipeline_do_if_else",
 	"properties": {
 		"activities": [
 			{
