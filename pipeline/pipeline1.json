@@ -1,0 +1,108 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dzielenie",
+					"value": {
+						"value": "@div(1,0)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set_variable_succes",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dodawanie",
+					"value": {
+						"value": "@add(3,4)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set_variable_fail",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dodawanie",
+					"value": {
+						"value": "@add(1, 2)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set_variable_success_skip",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set_variable_succes",
+						"dependencyConditions": [
+							"Skipped"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dodawanie",
+					"value": {
+						"value": "@add(1,1)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"Dzielenie": {
+				"type": "String"
+			},
+			"dzielenie": {
+				"type": "Integer"
+			},
+			"dodawanie": {
+				"type": "Integer"
+			}
+		},
+		"annotations": []
+	}
+}
