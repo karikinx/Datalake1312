@@ -12,7 +12,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "dzielenie",
+					"variableName": "Dzielenie1",
 					"value": {
 						"value": "@div(10,2)",
 						"type": "Expression"
@@ -86,7 +86,7 @@
 				"typeProperties": {
 					"variableName": "dodawanie",
 					"value": {
-						"value": "@add(1,1)",
+						"value": "@add(1,2)",
 						"type": "Expression"
 					}
 				}
@@ -99,7 +99,7 @@
 			"dodawanie": {
 				"type": "Integer"
 			},
-			"Dzielenie": {
+			"Dzielenie1": {
 				"type": "Integer"
 			}
 		},
