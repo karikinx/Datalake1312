@@ -1,0 +1,70 @@
+{
+	"name": "02_DataFlow_Transakcje_Karol",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText2",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DelimitedText4",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "dataoperacji2"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          data_operacji as string,",
+				"          opis_operacji as string,",
+				"          rachunek as string,",
+				"          kategoria as string,",
+				"          kwota as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> source1",
+				"source1 derive(dataoperacji3 = toDate(substring(data_operacji, 7, 4) + '-' + substring(data_operacji, 4, 2) + '-' + substring(data_operacji, 1, 2), 'yyyy-MM-dd')) ~> dataoperacji2",
+				"dataoperacji2 select(mapColumn(",
+				"          dataoperacji3,",
+				"          opis_operacji,",
+				"          rachunek,",
+				"          kategoria,",
+				"          kwota",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          dataoperacji3 as string,",
+				"          opis_operacji as string,",
+				"          rachunek as string,",
+				"          kategoria as string,",
+				"          kwota as string",
+				"     ),",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}

@@ -1,0 +1,205 @@
+{
+	"name": "01_Dataflow_Warehouse",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable3",
+						"type": "DatasetReference"
+					},
+					"name": "SalesOrderHeaderStream"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
+					"name": "SalesOrderDetails"
+				},
+				{
+					"dataset": {
+						"referenceName": "appserver40000_appdb_Product",
+						"type": "DatasetReference"
+					},
+					"name": "ProductStream"
+				},
+				{
+					"dataset": {
+						"referenceName": "appserver4000_adddb_ProductCategory",
+						"type": "DatasetReference"
+					},
+					"name": "ProductCategoryStream"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "datadimproduct",
+						"type": "DatasetReference"
+					},
+					"name": "sink4prices"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "ProductStreamJoin"
+				},
+				{
+					"name": "SelectDimProduct"
+				},
+				{
+					"name": "FilterForPrices"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          DataOperacji as date,",
+				"          OpisOperacji as string,",
+				"          Rachunek as string,",
+				"          Kategoria as string,",
+				"          Kwota as decimal(19,4)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SalesOrderHeaderStream",
+				"source(output(",
+				"          Correlationid as string,",
+				"          Operationname as string,",
+				"          Status as string,",
+				"          Eventcategory as string,",
+				"          Level as string,",
+				"          Time as timestamp,",
+				"          Subscription as string,",
+				"          Eventinitiatedby as string,",
+				"          Resourcetype as string,",
+				"          Resourcegroup as string,",
+				"          Resource as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SalesOrderDetails",
+				"source(output(",
+				"          DataOperacji as date,",
+				"          OpisOperacji as string,",
+				"          Rachunek as string,",
+				"          Kategoria as string,",
+				"          Kwota as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ProductStream",
+				"source(output(",
+				"          DataOperacji as date,",
+				"          OpisOperacji as string,",
+				"          Rachunek as string,",
+				"          Kategoria as string,",
+				"          Kwota as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ProductCategoryStream",
+				"SalesOrderHeaderStream, SalesOrderDetails join(Kategoria == Resourcegroup,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 select(mapColumn(",
+				"          DataOperacji,",
+				"          OpisOperacji,",
+				"          Rachunek,",
+				"          Kategoria,",
+				"          Kwota,",
+				"          Correlationid,",
+				"          Operationname,",
+				"          Eventcategory,",
+				"          Level,",
+				"          Time,",
+				"          Subscription,",
+				"          Eventinitiatedby,",
+				"          Resourcetype,",
+				"          Resourcegroup,",
+				"          Resource",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"ProductStream, ProductCategoryStream join(ProductStream@Rachunek == ProductCategoryStream@Rachunek,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> ProductStreamJoin",
+				"ProductStreamJoin select(mapColumn(",
+				"          DataOperacji = ProductStream@DataOperacji,",
+				"          OpisOperacji = ProductStream@OpisOperacji,",
+				"          Rachunek = ProductStream@Rachunek,",
+				"          Kwota = ProductStream@Kwota,",
+				"          DataOperacji = ProductCategoryStream@DataOperacji,",
+				"          OpisOperacji = ProductCategoryStream@OpisOperacji,",
+				"          Rachunek = ProductCategoryStream@Rachunek,",
+				"          Kwota = ProductCategoryStream@Kwota",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SelectDimProduct",
+				"SelectDimProduct filter(Kwota>=5) ~> FilterForPrices",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          DataOperacji as string,",
+				"          OpisOperacji as string,",
+				"          Rachunek as string,",
+				"          Kategoria as string,",
+				"          Kwota as double",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"FilterForPrices sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          DataOperacji as date,",
+				"          OpisOperacji as string,",
+				"          Rachunek as string,",
+				"          Kategoria as string,",
+				"          Kwota as double",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          DataOperacji,",
+				"          OpisOperacji,",
+				"          Rachunek,",
+				"          Kwota",
+				"     )) ~> sink4prices"
+			]
+		}
+	}
+}

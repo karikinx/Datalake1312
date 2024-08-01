@@ -1,0 +1,134 @@
+{
+	"name": "CopyPipeline_bnc",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_bnc",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "data//Operacje.csv"
+					},
+					{
+						"name": "Destination",
+						"value": "dbo.Operacje"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings",
+							"skipLineCount": 0
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "#Data operacji",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "#Data operacji",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "#Opis operacji",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "#Opis operacji",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "#Rachunek",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "#Rachunek",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "#Kategoria",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "#Kategoria",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "#Kwota",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "#Kwota",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_bnc",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_bnc",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-07-19T06:54:58Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

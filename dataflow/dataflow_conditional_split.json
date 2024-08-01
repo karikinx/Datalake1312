@@ -1,0 +1,63 @@
+{
+	"name": "dataflow_conditional_split",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable4",
+						"type": "DatasetReference"
+					},
+					"name": "OperacjeStream"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable6",
+						"type": "DatasetReference"
+					},
+					"name": "OszczedzanieSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "split1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          DataOperacji as date,",
+				"          OpisOperacji as string,",
+				"          Rachunek as string,",
+				"          Kategoria as string,",
+				"          Kwota as double",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> OperacjeStream",
+				"OperacjeStream split(Kwota>2,",
+				"     disjoint: false) ~> split1@(Wiecej, Mniej)",
+				"split1@Wiecej sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          DataOperacji as date,",
+				"          OpisOperacji as string,",
+				"          Rachunek as string,",
+				"          Kategoria as string,",
+				"          Kwota as double",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> OszczedzanieSink"
+			]
+		}
+	}
+}

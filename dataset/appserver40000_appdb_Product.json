@@ -1,0 +1,39 @@
+{
+	"name": "appserver40000_appdb_Product",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "appdbt",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "DataOperacji",
+				"type": "date"
+			},
+			{
+				"name": "OpisOperacji",
+				"type": "varchar"
+			},
+			{
+				"name": "Rachunek",
+				"type": "varchar"
+			},
+			{
+				"name": "Kategoria",
+				"type": "varchar"
+			},
+			{
+				"name": "Kwota",
+				"type": "float",
+				"precision": 15
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Operacje6"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

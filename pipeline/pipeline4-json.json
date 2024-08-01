@@ -1,0 +1,176 @@
+{
+	"name": "pipeline4-json",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "01_dataflow_json",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "Copy_data_json_warehouse",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Data flow1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "datalake1312",
+							"type": "LinkedServiceReference"
+						},
+						"path": "staging"
+					},
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['DataOperacji']"
+								},
+								"sink": {
+									"name": "DataOperacji",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"path": "$['OpisOperacji']"
+								},
+								"sink": {
+									"name": "OpisOperacji",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Rachunek']"
+								},
+								"sink": {
+									"name": "Rachunek",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Kategoria']"
+								},
+								"sink": {
+									"name": "Kategoria",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['Kwota']"
+								},
+								"sink": {
+									"name": "Kwota",
+									"type": "Double"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Activity_lake_json",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "appserver40000_appdb_Product",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "DeleteJson",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Copy_data_json_warehouse",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Activity_lake_json",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*.json",
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2024-07-24T10:04:30Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}
