@@ -1,0 +1,77 @@
+{
+	"name": "01_pipeline_if",
+	"properties": {
+		"activities": [
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(greaterOrEquals(variables('Liczba5'),5), lessOrEquals(variables('Liczba5'),10))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Wait false",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Wait true",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Liczba5",
+					"value": {
+						"value": "@pipeline().parameters.Number",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Number": {
+				"type": "int",
+				"defaultValue": 3
+			}
+		},
+		"variables": {
+			"Liczba5": {
+				"type": "Integer"
+			}
+		},
+		"annotations": []
+	}
+}
