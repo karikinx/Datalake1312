@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@pipeline().parameters.number",
+						"value": "@string(pipeline().parameters.number)",
 						"type": "Expression"
 					},
 					"cases": [
@@ -61,8 +61,8 @@
 		],
 		"parameters": {
 			"number": {
-				"type": "string",
-				"defaultValue": "1"
+				"type": "int",
+				"defaultValue": 1
 			}
 		},
 		"annotations": []
