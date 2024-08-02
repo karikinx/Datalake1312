@@ -1,0 +1,104 @@
+{
+	"name": "07_pipeline_error_handling",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set variable true",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "true",
+					"value": {
+						"value": "@div(1,2)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable false",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable true",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "false",
+					"value": {
+						"value": "@div(2,2)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable true_2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable false",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "true",
+					"value": {
+						"value": "@div(10,2)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Set variable true_2",
+						"dependencyConditions": [
+							"Skipped",
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			}
+		],
+		"parameters": {
+			"number": {
+				"type": "int",
+				"defaultValue": 10
+			}
+		},
+		"variables": {
+			"true": {
+				"type": "Integer"
+			},
+			"false": {
+				"type": "Integer"
+			}
+		},
+		"annotations": []
+	}
+}
