@@ -1,0 +1,70 @@
+{
+	"name": "02_pipeline_switch",
+	"properties": {
+		"activities": [
+			{
+				"name": "My switch",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.number",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "2",
+							"activities": [
+								{
+									"name": "Wait for 2",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						},
+						{
+							"value": "3",
+							"activities": [
+								{
+									"name": "Wait for  3",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						},
+						{
+							"value": "4",
+							"activities": [
+								{
+									"name": "Wait for 4",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"number": {
+				"type": "string",
+				"defaultValue": "1"
+			}
+		},
+		"annotations": []
+	}
+}

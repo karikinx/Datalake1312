@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(greaterOrEquals(variables('Liczba5'),5), lessOrEquals(variables('Liczba5'),10))",
+						"value": "@or(equals(variables('Liczba5'),5), equals(variables('Liczba5'),10))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
